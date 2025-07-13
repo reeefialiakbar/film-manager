@@ -10,14 +10,18 @@ return new class extends Migration
     {
         Schema::create('movies', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title');          // عنوان اصلی
+            $table->string('persian_title')->nullable(); // عنوان فارسی
             $table->string('director')->nullable();
-            $table->integer('year')->nullable();
+            $table->date('release_date')->nullable();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->string('file_path');
             $table->string('category')->default('iranian');
             $table->string('duration')->nullable();
+            $table->json('genres')->nullable();
+            $table->decimal('imdb_rating', 3, 1)->nullable();
+            $table->integer('your_rating')->nullable();
             $table->timestamps();
         });
     }

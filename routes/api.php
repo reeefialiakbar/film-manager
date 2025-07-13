@@ -1,23 +1,9 @@
 <?php
 
-use App\Http\Controllers\MovieController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// مسیرهای قبلی
-Route::get('/', function () {
-    return redirect('/dashboard');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-});
-
-// مسیرهای فیلم
-Route::get('/movies/iranian', [MovieController::class, 'iranianIndex']);
-Route::post('/movies', [MovieController::class, 'store']);
-
-// مسیرهای جدید برای درایوها و پوشه‌ها
-Route::get('/get-drives', function () {
+Route::get('/drives', function () {
     $drives = [];
     if (PHP_OS === 'WINNT') {
         foreach (range('A', 'Z') as $letter) {
@@ -33,7 +19,8 @@ Route::get('/get-drives', function () {
     return response()->json($drives);
 });
 
-Route::get('/get-default-folders', function () {
+Route::get('/default-folders', function () {
+    // این مسیرها را می‌توانید از دیتابیس یا فایل کانفیگ بخوانید
     return response()->json([
         ['path' => 'D:\\Movies', 'name' => 'پوشه فیلم‌ها'],
         ['path' => 'E:\\Series', 'name' => 'پوشه سریال‌ها'],

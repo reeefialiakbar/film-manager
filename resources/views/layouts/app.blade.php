@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>مدیریت فیلم</title>
+        <!-- Tailwind CSS -->
+    @vite('resources/css/app.css')
+
     <!-- فونت ایران‌سنس -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <!-- Tailwind CSS -->
@@ -100,4 +104,8 @@
     </div>
 </body>
 </html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@stack('styles')
+
+<!-- در انتهای body -->
 @stack('scripts')

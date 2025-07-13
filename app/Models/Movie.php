@@ -8,12 +8,23 @@ class Movie extends Model
 {
     protected $fillable = [
         'title',
+        'persian_title',
         'director',
-        'year',
+        'release_date',
         'description',
         'image',
         'file_path',
         'category',
-        'duration'
+        'duration',
+        'genres',
+        'imdb_rating',
+        'your_rating'
+    ];
+
+    protected $casts = [
+        'genres' => 'array',
+        'release_date' => 'date',
+        'imdb_rating' => 'float',
+        'your_rating' => 'integer'
     ];
 }

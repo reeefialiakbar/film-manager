@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\MovieController;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Http\Request;
 // مسیرهای قبلی
 Route::get('/', function () {
     return redirect('/dashboard');
@@ -40,19 +40,15 @@ Route::get('/get-default-folders', function () {
     ]);
 });
 
-Route::post('/transfer-file', function (Request $request) {
-    $sourcePath = $request->input('sourcePath');
-    $destinationPath = $request->input('destinationPath');
-    $defaultFolder = $request->input('defaultFolder');
-
+Route::post('/transfer-file', function (\Illuminate\Http\Request $request) {
+    $sourcePath = $request->input('sourcePath'); // آدرس فایل از دیتابیس (مثلاً L:\Movies\MyFilm.mp4)
+    $destinationPath = $request->input('destinationPath'); // آدرس مقصد انتخاب شده (مثلاً F:\MyVideos)
     try {
-        $finalPath = $defaultFolder ?: $destinationPath;
-        if (!is_dir($finalPath)) {
-            mkdir($finalPath, 0777, true);
+        if (!is_dir($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
         }
-
         $fileName = basename($sourcePath);
-        $success = copy($sourcePath, $finalPath . DIRECTORY_SEPARATOR . $fileName);
+        $success = copy($sourcePath, $destinationPath . DIRECTORY_SEPARATOR . $fileName);
 
         return response()->json([
             'success' => $success,
@@ -154,7 +150,12 @@ Route::post('/transfer-file-progress', function (Request $request) {
     $destinationPath = $request->input('destinationPath');
     $fileName = basename($sourcePath);
     $targetFile = $destinationPath . DIRECTORY_SEPARATOR . $fileName;
-
+    if (!file_exists($sourcePath)) {
+        return response()->json([
+            'success' => false,
+            'error' => "فایل منبع وجود ندارد یا مسیر اشتباه است: $sourcePath"
+        ]);
+    }
     // اندازه فایل و chunk
     $chunkSize = 1024 * 1024 * 10; // 10MB
     $totalSize = filesize($sourcePath);

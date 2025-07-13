@@ -15,3 +15,4 @@ body.modal-active { overflow-x: hidden; overflow-y: visible !important; }
 .folder-icon, .file-icon { margin-left: 8px; }
 .selected-folder { background: #6366f1; color: #fff; }
 #transferProgressBar { text-align: center; direction: rtl; }
+.bg-indigo-600 { background-color: #6366f1; }

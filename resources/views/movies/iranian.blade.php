@@ -223,7 +223,7 @@
                     <div class="flex">
                         <input type="text" name="file_path" id="file_path" class="w-full rounded-lg border-gray-300" readonly required>
                         <button type="button" onclick="openFileDialog()" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg mr-2">
-                            انتخاب فایل
+                            انتخاب از هارد
                         </button>
                     </div>
                 </div>
@@ -285,15 +285,8 @@
         </div>
     </div>
 </div>
-<!-- Progress Bar انتقال -->
-<div id="transferProgressModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md flex flex-col items-center">
-        <h3 class="text-lg font-bold mb-4">در حال انتقال فایل...</h3>
-        <div class="w-full bg-gray-200 rounded-full h-6 mb-4">
-            <div id="transferProgressBar" class="bg-indigo-600 h-6 rounded-full text-xs text-white flex items-center justify-center" style="width: 0%">0%</div>
-        </div>
-    </div>
-</div>
+<div id="transferProgressContainer" class="fixed bottom-4 left-4 flex flex-col gap-2 z-50 items-start"></div>
+
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css" rel="stylesheet" />
@@ -391,17 +384,21 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.classList.remove('flex');
     };
 
-    // تابع انتخاب فایل
-    window.openFileDialog = function() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'video/*';
-        input.onchange = function(e) {
-            document.getElementById('file_path').value = e.target.files[0].path;
-        };
-        input.click();
-    };
 
+    window.openFileDialog = function() {
+        Swal.fire({
+            title: 'مسیر کامل فایل فیلم را وارد کنید',
+            input: 'text',
+            inputPlaceholder: 'مثال: E:\\Movies\\Shenaie_Parvaneh_720p.mp4',
+            showCancelButton: true,
+            confirmButtonText: 'تأیید',
+            cancelButtonText: 'انصراف'
+        }).then(function(result) {
+            if (result.isConfirmed && result.value) {
+                document.getElementById('file_path').value = result.value;
+            }
+        });
+    };
 
 
     // دریافت لیست درایوها

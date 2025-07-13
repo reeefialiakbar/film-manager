@@ -4,10 +4,58 @@
 <div class="bg-white rounded-lg shadow-lg p-6">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold">فیلم‌های ایرانی</h2>
-        <button onclick="openModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
-            <i class="fas fa-plus ml-2"></i>
-            افزودن فیلم جدید
-        </button>
+        <div class="flex gap-2">
+            <button onclick="openModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
+                <i class="fas fa-plus ml-2"></i>
+                افزودن فیلم جدید
+            </button>
+            <button onclick="openDestManager()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <i class="fas fa-hdd ml-2"></i>
+                مدیریت مقصد انتقال فیلم
+            </button>
+        </div>
+    </div>
+
+        <!-- نمایش پوشه مقصد فعلی -->
+    <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-lg">
+        <div class="font-bold text-blue-800">پوشه پیش‌فرض انتقال:
+            <span id="currentDestFolder" class="font-normal text-gray-700"></span>
+        </div>
+    </div>
+
+        <!-- مودال انتخاب درایو و پوشه مقصد -->
+    <div id="destManagerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 modal">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">انتخاب پوشه مقصد پیش‌فرض</h3>
+                <button onclick="closeDestManager()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">انتخاب درایو یا فلش</label>
+                <select id="selectDrive" class="w-full rounded-lg border-gray-300"></select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">پوشه‌ها و فایل‌های درایو</label>
+                <div id="foldersFilesList" class="border rounded-lg p-4 h-64 overflow-auto bg-gray-50"></div>
+                <!-- ساخت پوشه جدید -->
+                <div class="flex mt-2">
+                    <input type="text" id="newFolderName" placeholder="نام پوشه جدید" class="w-full rounded-lg border-gray-300 px-2 py-1 text-right">
+                    <button onclick="createNewFolder()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-lg ml-2">
+                        ساخت پوشه
+                    </button>
+                    <button onclick="deleteSelectedFolder()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-lg ml-2">
+                        حذف پوشه
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-end">
+                <button type="button" onclick="closeDestManager()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg ml-2">
+                    انصراف
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- جستجو و فیلتر -->
@@ -74,6 +122,9 @@
                         <button class="text-green-500 hover:text-green-700 mx-1" onclick="transferMovie('{{ $movie->file_path }}')">
                             <i class="fas fa-exchange-alt"></i>
                         </button>
+                        <button class="text-green-500 hover:text-green-700 mx-1" onclick="transferMovieToDefault('{{ $movie->file_path }}')">
+                            <i class="fas fa-copy"></i> انتقال سریع
+                        </button>
                     </td>
                 </tr>
                 @endforeach
@@ -82,29 +133,29 @@
     </div>
 
     <!-- Modal افزودن/ویرایش فیلم -->
-    <div id="movieModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-full max-w-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold" id="modalTitle">افزودن فیلم جدید</h3>
-                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+                    <div id="movieModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-2xl">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-xl font-bold" id="modalTitle">افزودن فیلم جدید</h3>
+                                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
 
-            <form id="movieForm" class="space-y-4">
-                @csrf
-                <div class="grid grid-cols-2 gap-4">
-                        <div>
-        <label class="block text-sm font-medium mb-1">نام اصلی فیلم (انگلیسی)</label>
-        <input type="text" name="title" class="w-full rounded-lg border-gray-300" required
-               dir="ltr" placeholder="Enter original title">
-    </div>
+                            <form id="movieForm" class="space-y-4">
+                                @csrf
+                                <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                        <label class="block text-sm font-medium mb-1">نام اصلی فیلم (انگلیسی)</label>
+                        <input type="text" name="title" class="w-full rounded-lg border-gray-300" required
+                            dir="ltr" placeholder="Enter original title">
+                    </div>
 
-    <div>
-        <label class="block text-sm font-medium mb-1">نام فارسی فیلم</label>
-        <input type="text" name="persian_title" class="w-full rounded-lg border-gray-300"
-               placeholder="عنوان فارسی فیلم را وارد کنید">
-    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">نام فارسی فیلم</label>
+                        <input type="text" name="persian_title" class="w-full rounded-lg border-gray-300"
+                            placeholder="عنوان فارسی فیلم را وارد کنید">
+                    </div>
 
                     <div>
                         <label class="block text-sm font-medium mb-1">کارگردان</label>
@@ -234,28 +285,69 @@
         </div>
     </div>
 </div>
-
+<!-- Progress Bar انتقال -->
+<div id="transferProgressModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md flex flex-col items-center">
+        <h3 class="text-lg font-bold mb-4">در حال انتقال فایل...</h3>
+        <div class="w-full bg-gray-200 rounded-full h-6 mb-4">
+            <div id="transferProgressBar" class="bg-indigo-600 h-6 rounded-full text-xs text-white flex items-center justify-center" style="width: 0%">0%</div>
+        </div>
+    </div>
+</div>
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css" rel="stylesheet" />
+<link href="{{ asset('css/iranian-movie-extra.css') }}" rel="stylesheet" />
 <style>
-    .modal {
-        transition: opacity 0.25s ease;
+    .modal { transition: opacity 0.25s ease; }
+    body.modal-active { overflow-x: hidden; overflow-y: visible !important; }
+    .folder-item, .file-item {
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 6px;
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+        text-align: right;
     }
-    body.modal-active {
-        overflow-x: hidden;
-        overflow-y: visible !important;
-    }
-    .select2-container {
-        width: 100% !important;
-    }
+    .folder-item:hover { background: #e0e7ff; }
+    .file-item:hover { background: #f3f4f6; }
+    .folder-icon, .file-icon { margin-left: 8px; }
+    .selected-folder { background: #6366f1; color: #fff; }
 </style>
 @endpush
 
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="{{ asset('js/iranian-movie-extra.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
+        // Select2 ژانرها
+    $('#genresSelect').select2({ placeholder: 'ژانرها را انتخاب کنید', dir: 'rtl', width: '100%' });
+
+    // دریافت مقصد پیش‌فرض فعلی (از localStorage)
+    defaultDestFolder = localStorage.getItem('defaultDestFolder') || '';
+    document.getElementById('currentDestFolder').textContent = defaultDestFolder ? defaultDestFolder : 'انتخاب نشده';
+
+        window.openDestManager = async function() {
+        const modal = document.getElementById('destManagerModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('modal-active');
+        await loadDrives();
+    };
+        window.closeDestManager = function() {
+        const modal = document.getElementById('destManagerModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('modal-active');
+    };
+
     // Initialize Select2
     $('#genresSelect').select2({
         placeholder: 'ژانرها را انتخاب کنید',
@@ -310,23 +402,61 @@ document.addEventListener('DOMContentLoaded', function() {
         input.click();
     };
 
-    // توابع انتقال فایل
-    let availableDrives = [];
-    let defaultFolders = [];
 
-window.loadDrives = async function() {
-    try {
-        const response = await fetch('/get-drives');
-        availableDrives = await response.json();
 
-        const driveSelect = document.getElementById('driveSelect');
-        driveSelect.innerHTML = availableDrives.map(drive =>
-            `<option value="${drive.path}">${drive.label} (${drive.path})</option>`
+    // دریافت لیست درایوها
+    window.loadDrives = async function() {
+        const driveSelect = document.getElementById('selectDrive');
+        driveSelect.innerHTML = '<option value="">در حال بارگذاری...</option>';
+        let drives = [];
+        try {
+            const res = await fetch('/get-drives');
+            drives = await res.json();
+        } catch { }
+        driveSelect.innerHTML = drives.map(d =>
+            `<option value="${d.path}">${d.label} (${d.path})</option>`
         ).join('');
-    } catch (error) {
-        console.error('Error loading drives:', error);
-    }
-};
+        driveSelect.onchange = () => loadFoldersFiles(driveSelect.value);
+        if (drives.length > 0) loadFoldersFiles(drives[0].path);
+    };
+
+        // دریافت پوشه‌ها و فایل‌های درایو
+    window.loadFoldersFiles = async function(path) {
+        const foldersFilesList = document.getElementById('foldersFilesList');
+        foldersFilesList.innerHTML = '<div>در حال بارگذاری...</div>';
+        let result = { folders: [], files: [] };
+        try {
+            const res = await fetch(`/get-folders-files?path=${encodeURIComponent(path)}`);
+            result = await res.json();
+        } catch { foldersFilesList.innerHTML = '<div>خطا در بارگذاری</div>'; return; }
+        let html = '';
+        result.folders.forEach(f => {
+            html += `<div class="folder-item" onclick="selectDefaultFolder('${f.path}')">
+                        <i class="fas fa-folder folder-icon"></i>
+                        ${f.name}
+                    </div>`;
+        });
+        result.files.forEach(f => {
+            html += `<div class="file-item" title="${f.name}">
+                        <i class="fas fa-file file-icon"></i>
+                        ${f.name}
+                    </div>`;
+        });
+        foldersFilesList.innerHTML = html;
+    };
+        // انتخاب پوشه مقصد پیش‌فرض
+    window.selectDefaultFolder = function(folderPath) {
+        defaultDestFolder = folderPath;
+        localStorage.setItem('defaultDestFolder', folderPath);
+        document.getElementById('currentDestFolder').textContent = folderPath;
+        Swal.fire({
+            icon: 'success',
+            title: 'پوشه پیش‌فرض انتخاب شد',
+            text: folderPath,
+            confirmButtonText: 'باشه'
+        });
+        closeDestManager();
+    };
 
 window.loadDefaultFolders = async function() {
     try {
@@ -341,6 +471,56 @@ window.loadDefaultFolders = async function() {
         console.error('Error loading default folders:', error);
     }
 };
+    // انتقال سریع فایل به پوشه پیش‌فرض
+    window.quickTransferToDefault = async function() {
+        if (!defaultDestFolder) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'پوشه پیش‌فرض انتخاب نشده',
+                text: 'لطفاً ابتدا پوشه پیش‌فرض را انتخاب کنید.',
+                confirmButtonText: 'باشه'
+            });
+            return;
+        }
+        const filePath = prompt('مسیر فایل فیلم را وارد کنید:');
+        if (!filePath) return;
+        try {
+            const res = await fetch('/transfer-file', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    sourcePath: filePath,
+                    destinationPath: defaultDestFolder
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'انتقال موفق',
+                    text: `فایل به ${defaultDestFolder} منتقل شد.`,
+                    confirmButtonText: 'باشه'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطا در انتقال',
+                    text: data.error || 'خطا در انتقال فایل',
+                    confirmButtonText: 'باشه'
+                });
+            }
+        } catch {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا در ارتباط',
+                text: 'ارتباط با سرور قطع شد',
+                confirmButtonText: 'باشه'
+            });
+        }
+    };
 
     window.transferMovie = function(filePath) {
         const modal = document.getElementById('transferModal');

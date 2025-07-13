@@ -1,0 +1,17 @@
+.modal { transition: opacity 0.25s ease; }
+body.modal-active { overflow-x: hidden; overflow-y: visible !important; }
+.folder-item, .file-item {
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    text-align: right;
+    direction: rtl;
+}
+.folder-item:hover { background: #e0e7ff; }
+.file-item:hover { background: #f3f4f6; }
+.folder-icon, .file-icon { margin-left: 8px; }
+.selected-folder { background: #6366f1; color: #fff; }
+#transferProgressBar { text-align: center; direction: rtl; }

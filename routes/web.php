@@ -190,3 +190,18 @@ Route::get('/transfer-progress', function (Request $request) {
     }
     return response()->json(['percent' => 100]);
 });
+
+Route::post('/open-file-folder', function (\Illuminate\Http\Request $request) {
+    $filePath = $request->input('filePath');
+    $directory = dirname($filePath);
+    try {
+        // فقط روی ویندوز اجرا شود
+        if (PHP_OS === 'WINNT') {
+            exec('start explorer.exe "' . $directory . '"');
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false, 'error' => 'فقط روی ویندوز قابل اجراست']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'error' => $e->getMessage()]);
+    }
+});

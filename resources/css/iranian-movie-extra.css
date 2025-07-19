@@ -1,0 +1,6 @@
+#transferProgressContainer {
+    direction: rtl;
+    align-items: flex-end;
+}
+.bg-indigo-600 { background-color: #6366f1; }
+.text-right { text-align: right; }

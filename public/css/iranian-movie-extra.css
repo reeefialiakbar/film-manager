@@ -16,3 +16,24 @@ body.modal-active { overflow-x: hidden; overflow-y: visible !important; }
 .selected-folder { background: #6366f1; color: #fff; }
 #transferProgressBar { text-align: center; direction: rtl; }
 .bg-indigo-600 { background-color: #6366f1; }
+#transferProgressContainer {
+    direction: rtl;
+    align-items: flex-end;
+}
+.bg-indigo-600 { background-color: #6366f1; }
+.text-right { text-align: right; }
+.folder-item, .file-item {
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    text-align: right;
+    direction: rtl;
+    font-size: 1rem;
+}
+.folder-item:hover { background: #dbeafe; }
+.file-item:hover { background: #f3f4f6; }
+.folder-icon, .file-icon { margin-left: 10px; }
+.selected-folder { background: #6366f1; color: #fff; }

@@ -9,10 +9,7 @@
                 <i class="fas fa-plus ml-2"></i>
                 افزودن فیلم جدید
             </button>
-            <button onclick="openDestManager()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center">
-                <i class="fas fa-hdd ml-2"></i>
-                مدیریت مقصد انتقال فیلم
-            </button>
+
         </div>
     </div>
 
@@ -23,40 +20,30 @@
         </div>
     </div>
 
-        <!-- مودال انتخاب درایو و پوشه مقصد -->
-    <div id="destManagerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 modal">
-        <div class="bg-white rounded-lg p-6 w-full max-w-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">انتخاب پوشه مقصد پیش‌فرض</h3>
-                <button onclick="closeDestManager()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2">انتخاب درایو یا فلش</label>
-                <select id="selectDrive" class="w-full rounded-lg border-gray-300"></select>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2">پوشه‌ها و فایل‌های درایو</label>
-                <div id="foldersFilesList" class="border rounded-lg p-4 h-64 overflow-auto bg-gray-50"></div>
-                <!-- ساخت پوشه جدید -->
-                <div class="flex mt-2">
-                    <input type="text" id="newFolderName" placeholder="نام پوشه جدید" class="w-full rounded-lg border-gray-300 px-2 py-1 text-right">
-                    <button onclick="createNewFolder()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-lg ml-2">
-                        ساخت پوشه
-                    </button>
-                    <button onclick="deleteSelectedFolder()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-lg ml-2">
-                        حذف پوشه
-                    </button>
-                </div>
-            </div>
-            <div class="flex justify-end">
-                <button type="button" onclick="closeDestManager()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg ml-2">
-                    انصراف
-                </button>
-            </div>
+<!-- مودال انتخاب پوشه و فیلم -->
+<div id="selectFolderModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold">انتخاب پوشه و فیلم</h3>
+            <button onclick="closeSelectFolderModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2">انتخاب درایو یا پوشه</label>
+            <select id="selectDriveForFile" class="w-full rounded-lg border-gray-300"></select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2">ویدیوها و پوشه‌های انتخابی</label>
+            <div id="videosFilesList" class="border rounded-lg p-4 h-64 overflow-auto bg-gray-50"></div>
+        </div>
+        <div class="flex justify-end">
+            <button type="button" onclick="closeSelectFolderModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg ml-2">
+                انصراف
+            </button>
         </div>
     </div>
+</div>
 
     <!-- جستجو و فیلتر -->
     <div class="mb-6 bg-gray-50 p-4 rounded-lg">
@@ -122,9 +109,10 @@
                         <button class="text-green-500 hover:text-green-700 mx-1" onclick="transferMovie('{{ $movie->file_path }}')">
                             <i class="fas fa-exchange-alt"></i>
                         </button>
-                        <button class="text-green-500 hover:text-green-700 mx-1" onclick="transferMovieToDefault('{{ $movie->file_path }}')">
-                            <i class="fas fa-copy"></i> انتقال سریع
-                        </button>
+                            <button class="text-orange-500 hover:text-orange-700 mx-1" onclick="openFileFolder('{{ $movie->file_path }}')">
+                                <i class="fas fa-folder-open"></i>
+                            </button>
+
                     </td>
                 </tr>
                 @endforeach
@@ -141,6 +129,15 @@
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
+                            <div>
+    <label class="block text-sm font-medium mb-1">فایل فیلم</label>
+    <div class="flex">
+        <input type="text" name="file_path" id="file_path" class="w-full rounded-lg border-gray-300" readonly required>
+        <button type="button" onclick="openSelectFolderDialog()" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg mr-2">
+            انتخاب فیلم از پوشه
+        </button>
+    </div>
+</div>
 
                             <form id="movieForm" class="space-y-4">
                                 @csrf
@@ -314,7 +311,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="{{ asset('js/iranian-movie-extra.js') }}"></script>
 <script src="{{ asset('js/iranian-movie-extra.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
